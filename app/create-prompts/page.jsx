@@ -7,6 +7,8 @@ import Form  from '@/components/Form';
 
 const CreatePrompts = () => {
 
+  const router = useRouter();
+  const {data:session}=useSession();
   const [submitting, setSubitting] = useState(false);
   const [post,setPost] = useState({
     prompt:'',
@@ -14,6 +16,27 @@ const CreatePrompts = () => {
   });
 
   const createPrompt = async (e) =>{
+    e.preventDefault();
+    setSubitting(true);
+
+    try {
+      const response = await fetch ('api/prompt/new',{
+        method:'POST',
+        body:JSON.stringify({
+          prompt:post.prompt,
+          tag:post.tag,
+          userId:session?.user.id,
+        })
+      })
+      if(response.ok){
+        router.push('/');
+      }
+    } catch (error) {
+      console.log(error);
+    }finally{
+      setSubitting(false);
+    }
+ 
 
   }
 
